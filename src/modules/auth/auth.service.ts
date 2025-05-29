@@ -18,7 +18,7 @@ export class AuthService {
 
     public async login( {email, password}:AuthDto){
        
-            const resp = await this.auth.find();
+            const resp = await this.auth.findOne({where:{email:email}});
             console.log(resp);
             if (resp){
                 // if (resp.status === "Activo"){
