@@ -2,8 +2,11 @@ import {
     Column,
     Entity,
     PrimaryColumn,
-    PrimaryGeneratedColumn
+    PrimaryGeneratedColumn,
+    OneToMany,
   } from "typeorm";
+
+  import { ModelHasRolesEntity } from "./model.has.roles.entity";
   
   @Entity("users" /*, { schema: "romero" }*/)
   export class AuthEntity {
@@ -19,10 +22,15 @@ import {
     @Column({ name: 'email' })
     email:string;
 
-    @Column({ name: 'role' })
-    role:string;
+    @Column({ name: 'active', type: 'boolean' })
+    active: boolean;
 
-    @Column({ name: 'status' })
-    status: string;
-  
+    @Column({ name: 'deleted_at', type: 'timestamp', nullable: true })
+    deleted_at: Date | null;
+
+      
+    @OneToMany(() => ModelHasRolesEntity, modelHasRole => modelHasRole.user)
+    userRoles: ModelHasRolesEntity[];
+      
   }
+

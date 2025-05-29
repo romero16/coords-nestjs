@@ -12,7 +12,7 @@ import { CoordsGateway } from './gateway';
 export class CoordsService {
 
     constructor(
-        @InjectRepository(CoordsEntity) private coords: Repository<CoordsEntity>,
+        @InjectRepository(CoordsEntity, 'mongoConnection') private coords: Repository<CoordsEntity>,
         private readonly coordsGateway: CoordsGateway
       ) {}
 

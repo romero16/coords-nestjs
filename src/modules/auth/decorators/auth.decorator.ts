@@ -7,6 +7,6 @@ import { RolesGuard } from "../guards/roles.guard";
 export function Auth(...roles:Role[]){
     return applyDecorators(
         Roles(...roles),
-        UseGuards(AtuhGuard, RolesGuard)
+        UseGuards(AtuhGuard , RolesGuard)
     )
 }

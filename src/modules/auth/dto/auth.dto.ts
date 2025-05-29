@@ -1,7 +1,9 @@
+import { Optional } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { IsNotEmpty, IsNumber, IsOptional, Max, MaxLength, MinLength } from "class-validator";
 import { Message } from 'src/shared/message.decorator';
+import { Timestamp } from "typeorm";
 
 export class AuthDto { 
     @ApiProperty({ example: "Email" })
@@ -17,8 +19,19 @@ export class AuthDto {
     @MaxLength(30, {
         message: Message.MAX_LENGTH('$property', '$constraint1')
     })
-    @MinLength(8,{message: Message.MIN('$property', '$constraint1')})
+    @MinLength(6,{message: Message.MIN('$property', '$constraint1')})
     password: string;
+
+    @IsOptional()
+    @MinLength(1,{message: Message.MIN('$property', '$constraint1')})
+
+    active: boolean;
+    
+    @IsOptional()
+    deleted_at: Date | null;
+
+    @IsOptional()
+    role: [];
 
 }
 

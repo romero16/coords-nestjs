@@ -8,24 +8,15 @@ import { Request } from 'express';
 import { Role } from '../auth/enums/roles.enum';
 import { Auth } from '../auth/decorators/auth.decorator';
 
-interface RequestWithUser extends Request {
-  user:{
-    email:string,
-    role:string,
-    name:string,
-    id:number
-  }
-}
-
 @ApiBearerAuth()
 @Controller('coords')
-// @ApiTags('Coords')
+@ApiTags('Coordenadas')
 export class CoordsController {
 
   constructor(private readonly user: CoordsService) { }
 
   @ApiOperation({ summary: 'Listado de coordenadas' })
-  // @Auth(Role.ADMIN,Role.USER)
+  @Auth(Role.ROOT)
   @ApiResponse({
     status: 200,
     type: [CreateCoordsDto],
@@ -55,7 +46,7 @@ export class CoordsController {
 
   @ApiOperation({ summary: 'Registrar nueva coordenada' })
   @ApiBody({ type: CreateCoordsDto })
-  // @Auth(Role.ADMIN,Role.USER)
+  @Auth(Role.ROOT)
   @Post('save')
   async create(@Body() data:CreateCoordsDto) {
     return await this.user.save(data);

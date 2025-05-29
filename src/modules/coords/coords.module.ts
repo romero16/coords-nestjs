@@ -8,7 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { CoordsGateway } from './gateway';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CoordsEntity]),
+  imports: [TypeOrmModule.forFeature([CoordsEntity],'mongoConnection'),
 
   JwtModule.register({
       global: true,

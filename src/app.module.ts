@@ -11,11 +11,11 @@ import { AuthModule } from './modules/auth/auth.module';
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
 
-    // Conexión Postgres
+    // Conexión MySql
     TypeOrmModule.forRoot(dbConfigService.getMysqlConfig()),
 
     // Conexión MongoDB
-    // TypeOrmModule.forRoot(dbConfigService.getMongoConfig()),
+    TypeOrmModule.forRoot(dbConfigService.getMongoConfig()),
 
     CoordsModule,
     AuthModule
