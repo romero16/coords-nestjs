@@ -5,18 +5,20 @@ import { AllExceptionsFilter } from './core/exception.interceptor';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dbConfigService } from './config/dbconfig/dbconfig.service';
 import { CoordsModule } from './modules/coords/coords.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
 
     // Conexión Postgres
-    // TypeOrmModule.forRoot(dbConfigService.getPostgresConfig()),
+    TypeOrmModule.forRoot(dbConfigService.getMysqlConfig()),
 
     // Conexión MongoDB
-    TypeOrmModule.forRoot(dbConfigService.getMongoConfig()),
+    // TypeOrmModule.forRoot(dbConfigService.getMongoConfig()),
 
     CoordsModule,
+    AuthModule
   ],
   controllers: [],
   providers: [{ provide: APP_FILTER, useClass: AllExceptionsFilter }],

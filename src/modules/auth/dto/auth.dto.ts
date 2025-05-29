@@ -1,0 +1,57 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { Transform } from "class-transformer";
+import { IsNotEmpty, IsNumber, IsOptional, Max, MaxLength, MinLength } from "class-validator";
+import { Message } from 'src/shared/message.decorator';
+
+export class AuthDto { 
+    @ApiProperty({ example: "Email" })
+    @Transform(({value}) => value.trim())
+    @MaxLength(50, {
+        message: Message.MAX_LENGTH('$property', '$constraint1')
+    })
+    @MinLength(8,{message: Message.MIN('$property', '$constraint1')})
+    email: string;
+
+    @ApiProperty({ example: "Constraseña" })
+    @Transform(({value}) => value.trim())
+    @MaxLength(30, {
+        message: Message.MAX_LENGTH('$property', '$constraint1')
+    })
+    @MinLength(8,{message: Message.MIN('$property', '$constraint1')})
+    password: string;
+
+}
+
+export class RecoveryPasswordDto{
+    @ApiProperty({ example: "Email" })
+    @Transform(({value}) => value.trim())
+    @MaxLength(50, {
+        message: Message.MAX_LENGTH('$property', '$constraint1')
+    })
+    @MinLength(8,{message: Message.MIN('$property', '$constraint1')})
+    email: string;
+
+    @ApiProperty({ example: "Host" })
+    @Transform(({value}) => value.trim())
+    @MaxLength(200, {
+        message: Message.MAX_LENGTH('$property', '$constraint1')
+    })
+    @MinLength(8,{message: Message.MIN('$property', '$constraint1')})
+    host: string;
+}
+
+export class NewPassword{
+    @ApiProperty({ example: "Nueva contraseña" })
+    @Transform(({value}) => value.trim())
+    @MaxLength(50, {
+        message: Message.MAX_LENGTH('$property', '$constraint1')
+    })
+    @MinLength(8,{message: Message.MIN('$property', '$constraint1')})
+    password: string;
+}
+
+export class ValidateTokenDto {
+    @ApiProperty({ example: "token" })
+    @MinLength(8,{message: Message.MIN('$property', '$constraint1')})
+    token: string;
+}
