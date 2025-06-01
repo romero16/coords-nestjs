@@ -22,11 +22,11 @@ import {
     @Column({ name: 'email' })
     email:string;
 
-    @Column({ name: 'active', type: 'boolean' })
-    active: boolean;
+    // @Column({ name: 'active', type: 'boolean' })
+    // active: boolean;
 
-    @Column({ name: 'deleted_at', type: 'timestamp', nullable: true })
-    deleted_at: Date | null;
+    // @Column({ name: 'deleted_at', type: 'timestamp', nullable: true })
+    // deleted_at: Date | null;
 
       
     @OneToMany(() => ModelHasRolesEntity, modelHasRole => modelHasRole.user)

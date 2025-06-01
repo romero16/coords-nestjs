@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
-import { AuthDto, NewPassword, RecoveryPasswordDto, ValidateTokenDto } from './dto/auth.dto';
+import { AuthDto, RefreshTokenDto } from './dto/auth.dto';
 import { AuthService } from './auth.service';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from './decorators/auth.decorator';
 import { Role } from 'src/modules/auth/enums/roles.enum';
 import { AtuhGuard } from './guards/auth.guard';
@@ -22,15 +22,13 @@ export class AuthController {
       return await this.auth.login(data);
     }
 
-
-    @MessagePattern({ cmd: 'validateToken' })
     @ApiOperation({ summary: 'Validación de token' })
-    @ApiResponse({status: 200, description:'Correo enviado'})
-    @ApiResponse({status: 500, description:'Correo no enviado'})
-    @ApiParam({ name: 'token', description: 'token a validar', })
-    @Get('validate-token/:token')
-    async validateToken(@Param('token') token: string) {
-      return await this.auth.validateToken(token);
+    @ApiResponse({status: 200, description:'Token generado'})
+    @ApiResponse({status: 500, description:'Error al generar el token'})
+    @ApiBody({ type: RefreshTokenDto })
+    @Post('refresh')
+    async refreshToken(@Body() token: RefreshTokenDto) {
+      return await this.auth.refreshToken(token);
     }
 
 

@@ -64,11 +64,6 @@ class DbConfigService {
 
 
 const requiredEnvVars = [
-  'DB_HOST',
-  'POSTGRES_PORT',
-  'POSTGRES_USER',
-  'POSTGRES_PASSWORD',
-  'POSTGRES_DB',
   'MONGO_HOST',
   'MONGO_PORT',
   'MONGO_DB',

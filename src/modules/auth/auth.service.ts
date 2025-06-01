@@ -2,7 +2,7 @@ import { AuthEntity } from './entity/auth.entity';
 import { HttpStatus, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AuthDto, NewPassword, RecoveryPasswordDto, ValidateTokenDto } from './dto/auth.dto';
+import { AuthDto, RefreshTokenDto } from './dto/auth.dto';
 import * as bcrytpjs from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ClientProxy } from '@nestjs/microservices';
@@ -22,8 +22,8 @@ export class AuthService {
             const resp = await this.auth.findOne({
                 where: {
                     email: email,
-                    active: true,
-                    deleted_at: IsNull(),
+                    // active: true,
+                    // deleted_at: IsNull(),
                   },
                   relations: {
                   userRoles: {
@@ -38,11 +38,22 @@ export class AuthService {
                 try {
                   const valid = await bcrytpjs.compare(password, resp.password); 
                   const rolesArray = resp.userRoles?.map(userRole => userRole.role.name) ?? [];
-                  const token = await this.jwtService.signAsync({id:resp.id,name:resp.name, email:resp.email, role:rolesArray});
+
+                  const values = {
+                    id:resp.id,
+                    email:resp.email, 
+                    role:rolesArray
+                  }
+                  const token = await this.jwtService.signAsync(values);
+                      const refreshToken = await this.jwtService.signAsync(values, {
+                        secret: process.env.JWTKEY_REFRESH,
+                        expiresIn: process.env.REFRESH_EXPIRATION,
+                      });
+
                   return {
                       statusCode: valid ? HttpStatus.OK : HttpStatus.BAD_REQUEST,
                       message: valid ? ["Datos obtenidos correctamente."] : ["Credenciales invalidas."],
-                      data: valid? token: [],
+                      data: valid?   {token:token, refres_token:refreshToken}: [],
                   }
                 } catch (error) {
                   return {
@@ -67,25 +78,30 @@ export class AuthService {
        
     }
 
+    async refreshToken(dto:RefreshTokenDto){
+    
+      try {
+      const data = await this.jwtService.verifyAsync(dto.refresh_token, {
+        secret: process.env.JWTKEY_REFRESH,
+      });
 
-    async validateToken(token:string){
-          try {
-            const payload = await this.jwtService.verifyAsync(
-              token,
-              {
-                secret: process.env.JWTKEY
-              }
-            );
-            return {
-                statusCode: HttpStatus.OK,
-                message: ["Token válido!"],
-                data: payload,
-            }
-          } catch {
-            return {
-                statusCode: HttpStatus.UNAUTHORIZED,
-                message: ["El token no es válido!"],
-            }
-          }
+      const values = {
+          id:data.id,
+          email:data.email, 
+          role:data.role
+      }
+
+      const token = await this.jwtService.signAsync(values);
+
+      return {
+        statusCode: 200,
+        message: ['Token renovado exitosamente'],
+        data: {
+          token: token,
+        },
+      };
+    } catch (error) {
+      throw new UnauthorizedException('Refresh token inválido o expirado.');
     }
+  }
 }
